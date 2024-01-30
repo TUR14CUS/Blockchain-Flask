@@ -30,7 +30,7 @@ This repository contains a simple blockchain implementation using Flask, where e
 python blockchain.py
 ```
 
-Replace `your_script_name.py` with the name of the script where your Flask application is defined.
+Replace `blockchain.py` with the name of the script where your Flask application is defined.
 
 The application will be running at `http://localhost:5000/`.
 
