@@ -1,6 +1,22 @@
 # Blockchain Implementation with Flask
 
-This repository contains a simple blockchain implementation using Flask, where each block is represented as a class. This blockchain allows mining new blocks, retrieving the entire chain, and checking the validity of the blockchain.
+This project demonstrates a basic blockchain implementation using Flask, where each block is represented as a class. The application provides three RESTful API endpoints to mine new blocks, retrieve the entire blockchain, and check the validity of the blockchain.
+
+## Table of Contents
+
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Running the Application](#running-the-application)
+- [API Endpoints](#api-endpoints)
+  - [1. Mine a New Block](#1-mine-a-new-block)
+  - [2. Get the Full Blockchain](#2-get-the-full-blockchain)
+  - [3. Check Blockchain Validity](#3-check-blockchain-validity)
+- [Example Usage](#example-usage)
+- [Responses](#responses)
+- [Project Structure](#project-structure)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Getting Started
 
@@ -27,10 +43,8 @@ This repository contains a simple blockchain implementation using Flask, where e
 ### Running the Application
 
 ```bash
-python blockchain.py
+python main.py
 ```
-
-Replace `blockchain.py` with the name of the script where your Flask application is defined.
 
 The application will be running at `http://localhost:5000/`.
 
@@ -94,6 +108,12 @@ The application will be running at `http://localhost:5000/`.
     "message": "Houston, we have a problem. The Blockchain is not valid."
   }
   ```
+
+## Project Structure
+
+- **main.py:** Entry point of the application.
+- **blockchain.py:** Contains the blockchain logic and Flask-RESTful resource classes.
+- **README.md:** Project documentation.
 
 ## Contributing
 

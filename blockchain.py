@@ -1,7 +1,11 @@
-import datetime
-import hashlib
-import json
-from flask import Flask, jsonify
+from enum import Enum
+from flask_restful import Resource
+from flask import jsonify
+
+class Endpoints(Enum):
+    MINE_BLOCK = '/mine_block'
+    GET_CHAIN = '/get_chain'
+    IS_VALID = '/is_valid'
 
 class Block:
     def __init__(self, index, timestamp, proof, previous_hash):
@@ -57,46 +61,45 @@ class Blockchain:
             block_index += 1
         return True
 
-# Creating a Web App
-app = Flask(__name__)
-
-# Creating a Blockchain
-blockchain = Blockchain()
-
 # Mining a new block
-@app.route('/mine_block', methods = ['GET'])
-def mine_block():
-    previous_block = blockchain.get_previous_block()
-    previous_proof = previous_block.proof
-    proof = blockchain.proof_of_work(previous_proof)
-    previous_hash = blockchain.hash(previous_block)
-    block = blockchain.create_block(proof, previous_hash)
-    response = {
-        'message': 'Congratulations, you just mined a block!',
-        'index': block.index,
-        'timestamp': block.timestamp,
-        'proof': block.proof,
-        'previous_hash': block.previous_hash
-    }
-    return jsonify(response), 201  # Use 201 Created status code
+class MineBlockResource(Resource):
+    def __init__(self, blockchain):
+        self.blockchain = blockchain
 
+    def get(self):
+        previous_block = self.blockchain.get_previous_block()
+        previous_proof = previous_block.proof
+        proof = self.blockchain.proof_of_work(previous_proof)
+        previous_hash = self.blockchain.hash(previous_block)
+        block = self.blockchain.create_block(proof, previous_hash)
+        response = {
+            'message': 'Congratulations, you just mined a block!',
+            'index': block.index,
+            'timestamp': block.timestamp,
+            'proof': block.proof,
+            'previous_hash': block.previous_hash
+        }
+        return jsonify(response), 201
+    
 # Getting the full Blockchain
-@app.route('/get_chain', methods = ['GET'])
-def get_chain():
-    response = {'chain': blockchain.chain,
-                'length': len(blockchain.chain)}
-    return jsonify(response), 200
+class BlockchainResource(Resource):
+    def __init__(self, blockchain):
+        self.blockchain = blockchain
+
+    def get(self):
+        response = {'chain': [vars(block) for block in self.blockchain.chain],
+                    'length': len(self.blockchain.chain)}
+        return jsonify(response), 200
 
 # Checking if the Blockchain is valid
-@app.route('/is_valid', methods = ['GET'])
-def is_valid():
-    is_valid = blockchain.is_chain_valid(blockchain.chain)
-    if is_valid:
-        response = {'message': 'All good. The Blockchain is valid.'}
-    else:
-        response = {'message': 'Houston, we have a problem. The Blockchain is not valid.'}
-    return jsonify(response), 200
+class IsValidResource(Resource):
+    def __init__(self, blockchain):
+        self.blockchain = blockchain
 
-# Running the app
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    def get(self):
+        is_valid = self.blockchain.is_chain_valid(self.blockchain.chain)
+        if is_valid:
+            response = {'message': 'All good. The Blockchain is valid.'}
+        else:
+            response = {'message': 'Houston, we have a problem. The Blockchain is not valid.'}
+        return jsonify(response), 200
